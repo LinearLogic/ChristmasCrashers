@@ -1,0 +1,5 @@
+X,Y,World,Targ.X,Targ.Y,Targ.W
+P 10 -9 0 10 -19 1
+K -10
+P 10 -19 1 10 -9 0
+K 2 -18 0
