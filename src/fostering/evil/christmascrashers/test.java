@@ -1,9 +1,5 @@
-package fostering.evil.christmascrashers;
-
-import java.io.File;
-import java.io.IOException;
-
 import org.lwjgl.input.Keyboard;
+import java.io.*;
 
 public class test {
 	public static void testFunctions(){//Called along with "RenderDat"'s
@@ -15,21 +11,18 @@ public class test {
 			System.out.println(player.xCoord+"  "+player.yCoord);
 	}
 	public static void main(String[] args) throws InterruptedException,IOException{
-		worldInfo.loadFile("files" + File.separator + "level1.txt",0,12);
-		worldInfo.loadFile("files" + File.separator + "level2.txt",1,12);
-		worldInfo.loadPortals("files" + File.separator + "portal.txt");
+		worldInfo.loadFile("/Users/Richard/Desktop/thievery/level1.txt",0,12);
+		worldInfo.loadFile("/Users/Richard/Desktop/thievery/level2.txt",1,12);
+		worldInfo.loadPortals("/Users/Richard/Desktop/thievery/portal.txt");
 		player.init();
 		renderingTest displayExample = new renderingTest();
-		displayExample.start();//I lost where it prints the things' lengths :/
+		try {
+			displayExample.start();//I lost where it prints the things' lengths :/
+		} catch (IllegalStateException e){
+			
+		}
 }}
 
 
-//DO ME
-//Menu Screen
-//"You Died" Screen
-//Fewer lives (parameter?)
-//More difficult muensters
-//Bosses
-//Plot... load sprites for all the dinner pieces....
-//Slide on ice
-//Modify jump physics (damping, double jump)
+//More powerful monsters... that's about it
+

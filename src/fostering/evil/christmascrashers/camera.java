@@ -1,4 +1,3 @@
-package fostering.evil.christmascrashers;
 
 public class camera {
 	public static double xCoord;

@@ -1,6 +1,4 @@
-package fostering.evil.christmascrashers;
-
-import java.util.ArrayList;
+import java.util.*;
 
 public class gremlin {
 	public static ArrayList<gremlin> allGremlins = new ArrayList<gremlin>();
@@ -10,8 +8,9 @@ public class gremlin {
 	public double speed = 1.0;
 	public double leftBound;
 	public double rightBound;
-	public static void makeGremlin(int w,double y, double l, double r){
-		allGremlins.add(new gremlin(w,y,l,r));
+	public int extra;
+	public static void makeGremlin(int w,double y, double l, double r,int e){
+		allGremlins.add(new gremlin(w,y,l,r,e));
 	}
 	
 	public static void moveAllGremlins(){
@@ -22,13 +21,14 @@ public class gremlin {
 		}
 	}
 	
-	public gremlin(int w,double y, double l, double r){
+	public gremlin(int w,double y, double l, double r,int e){
 		yCoord = y;
 		xCoord = l+0.1;
 		leftBound = l;
 		rightBound = r;
 		speed = usefulNumbers.gremlinSpeed;
 		world = w;
+		extra = e;
 		//TBD From File Read
 	}
 	

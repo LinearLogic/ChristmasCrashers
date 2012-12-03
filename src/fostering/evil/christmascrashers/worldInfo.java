@@ -1,10 +1,5 @@
-package fostering.evil.christmascrashers;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.NoSuchElementException;
-import java.util.Scanner;
+import java.util.*;
+import java.io.*;
 
 public class worldInfo {
 	//Will contain locations of blocks, et cetera et cetera
@@ -73,9 +68,22 @@ public class worldInfo {
 							gremlinStart = t;
 						} else {
 							gremlinEnd = t;
-							gremlin.makeGremlin(world, line, gremlinStart, gremlinEnd);
+							gremlin.makeGremlin(world, line, gremlinStart, gremlinEnd,0);
 						}
 						gremlinSequence = !gremlinSequence;
+						break;
+					case 'F':
+						if (gremlinSequence == false){
+							gremlinStart = t;
+						} else {
+							gremlinEnd = t;
+							gremlin.makeGremlin(world, line, gremlinStart, gremlinEnd,1);
+						}
+						gremlinSequence = !gremlinSequence;
+						break;
+					case '^':
+						//Spring
+						grabbable.createGrabbable(0, 0, t, line, 6, 0, world);
 						break;
 					case 'C': //Checkpoint
 						grabbable.createGrabbable(1, 1, t, line, 5, 0, world);

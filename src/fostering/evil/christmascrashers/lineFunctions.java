@@ -1,6 +1,4 @@
-package fostering.evil.christmascrashers;
-
-import java.util.ArrayList;
+import java.util.*;
 
 public class lineFunctions {
 	public static void moveToIntersection(){

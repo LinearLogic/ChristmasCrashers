@@ -1,7 +1,5 @@
-package fostering.evil.christmascrashers;
-
 //Contains all the stuff you can pick up
-import java.util.ArrayList;
+import java.util.*;
 
 public class grabbable {
 	public static int piecesOfDinner = 0;
@@ -73,6 +71,9 @@ public class grabbable {
 			usefulNumbers.keys = new ArrayList<Integer>(plot.keys);
 			usefulNumbers.backUp();
 			usefulNumbers.kbu();
+			break;
+		case 6:
+			player.yVel=45;
 			break;
 		}
 	}

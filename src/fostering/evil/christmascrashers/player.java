@@ -1,5 +1,3 @@
-package fostering.evil.christmascrashers;
-
 import org.lwjgl.input.Keyboard;
 
 public class player {
@@ -23,7 +21,7 @@ public class player {
 		xCoord = usefulNumbers.spawnX;
 		yCoord = usefulNumbers.spawnY;
 		world = usefulNumbers.spawnWorld;
-		health = usefulNumbers.spawnHealth;
+		health = usefulNumbers.H;
 		xVel = 0;
 		yVel = 0;
 		usefulNumbers.kubu();
@@ -39,32 +37,54 @@ public class player {
 		yVel = 0;
 	}
 	
+	public static int dJump = 0;
+	public static boolean hasDJumped = false;
+	public static boolean hasBeenReleased = true;
+	
 	public static void input(){
 		xVel = 0;
 		//Whatever the heck we do here...
-		if (Keyboard.isKeyDown(Keyboard.KEY_W) && (hasWallBelow()))
+		if ((Keyboard.isKeyDown(Keyboard.KEY_W) && ((hasWallBelow())||(dJump >= 8 && !hasDJumped && hasBeenReleased)))){
 			yVel=usefulNumbers.jumpConstant;
+			if (dJump >= 8 && !hasDJumped)
+				hasDJumped = true;
+		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_D))
 			xVel=usefulNumbers.playerSpeed;
+		//if (Keyboard.isKeyDown(Keyboard.KEY_D)&&!hasWallBelow())
+		//	xVel=0.5*usefulNumbers.playerSpeed;
 		//if (Keyboard.isKeyDown(Keyboard.KEY_D)&&(!(hasWallBelow())))
 		//	xVel=usefulNumbers.airSpeed;
 		if (Keyboard.isKeyDown(Keyboard.KEY_A))
 			xVel=-1*usefulNumbers.playerSpeed;
+		//if (Keyboard.isKeyDown(Keyboard.KEY_A)&&!hasWallBelow())
+		//	xVel=-0.5*usefulNumbers.playerSpeed;
 		//if (Keyboard.isKeyDown(Keyboard.KEY_A)&&(!(hasWallBelow())))
 		//	xVel=-1*usefulNumbers.airSpeed;
 		//gravity
 		yVel-=usefulNumbers.gravity;
+		
+		//The stuff is in here...
 	}
 	
 	public static void move(){
+		if (!usefulNumbers.canHasDjump)
+			hasDJumped = true;
 		lineFunctions.moveToIntersection();
 		if (hasWallAbove()&&(yVel>0)){//Define me!!!
 			yVel = 0;
 			yCoord=Math.round(yCoord);//So they're not hovering awkwardly
 		}
 		if (hasWallBelow()&&(yVel<0)){
+			hasDJumped = false;
+			hasBeenReleased = false;
+			dJump = 0;
 			yVel = 0;
 			yCoord=Math.round(yCoord);//So they're not hovering awkwardly
+		} else {
+			dJump++;
+			if (!(Keyboard.isKeyDown(Keyboard.KEY_W)))
+				hasBeenReleased = true;
 		}
 		if (hasWallRight()&&(xVel>0)){//Remember, right means #'s go up
 			xVel = 0;
@@ -76,10 +96,13 @@ public class player {
 		yCoord = yCoord+(yVel/usefulNumbers.framerate);//WHY WONT IT ADD
 		if ((yCoord < (worldInfo.bottomOfWorld-10))||(player.health<=0))
 			player.die();
-			
+		if (!usefulNumbers.canHasDjump)
+			hasDJumped = true;
 	}
 	
 	public static int justGotHurt = 0;
+	
+	
 	public static void checkGremlins(){
 		//Check and respond to hitting gremlins
 		long px = Math.round(player.xCoord);
@@ -91,8 +114,10 @@ public class player {
 			long y = Math.round(gremlin.allGremlins.get(n).yCoord);
 			if ((py == y)&&(px == x)){
 				justGotHurt%=24;
-				if (justGotHurt==0)
+				if (justGotHurt==0 && gremlin.allGremlins.get(n).extra == 0)
 					player.health-=usefulNumbers.gremlinAttack;
+				else if (justGotHurt==0 && gremlin.allGremlins.get(n).extra == 1)
+					player.health-=3*usefulNumbers.gremlinAttack;
 				else
 					justGotHurt++;
 			}
@@ -109,8 +134,9 @@ public class player {
 			if (grabbable.allGrabbables.get(n).world==player.world){
 			long x = Math.round(grabbable.allGrabbables.get(n).xCoord);
 			long y = Math.round(grabbable.allGrabbables.get(n).yCoord);
-			if (((py == y)&&(px == x))&&grabbable.allGrabbables.get(n).exists)
+			if (((py == y)&&(px == x))&&grabbable.allGrabbables.get(n).exists){
 				grabbable.allGrabbables.get(n).playerPickUp(n);
+			}
 			}
 		}
 	}

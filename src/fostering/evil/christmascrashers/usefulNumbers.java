@@ -1,16 +1,17 @@
-package fostering.evil.christmascrashers;
-
-import java.util.ArrayList;
+import java.util.*;
 public class usefulNumbers {
 	public static double framerate = 25;
 	public static double width = 12;
 	public static double height = 9;//Half the actual height and width
+	public static int lives = 10;
+	public static boolean canHasDjump = false;
 	//Number of frames per second
 	//NOT 0.04
 	public static double spawnX=1,spawnY=10,spawnHealth=10;
 	public static int spawnWorld=0;
 	public static ArrayList <Integer> keys = new ArrayList<Integer>();
 	public static ArrayList <Boolean> backup = new ArrayList <Boolean>();
+	public static double H = spawnHealth;
 	public static void kbu(){
 		keys = new ArrayList<Integer>();
 		int t;
@@ -45,7 +46,7 @@ public class usefulNumbers {
 		spawnX = x;
 		spawnY = y;
 		spawnWorld = w;
-		spawnHealth = h;
+		H = h;
 	}
 	public static double jumpConstant = 30;
 	public static double playerSpeed = 10;

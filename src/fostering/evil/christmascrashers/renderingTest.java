@@ -1,19 +1,17 @@
-package fostering.evil.christmascrashers;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-
 import org.lwjgl.LWJGLException;
+import java.util.*;
+
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
-import org.lwjgl.opengl.GL11;
-import org.newdawn.slick.Color;
-import org.newdawn.slick.opengl.Texture;
-import org.newdawn.slick.opengl.TextureImpl;
-import org.newdawn.slick.opengl.TextureLoader;
+
+import org.newdawn.slick.opengl.*;
 import org.newdawn.slick.util.ResourceLoader;
+import org.newdawn.slick.Color;
+import org.newdawn.slick.opengl.TextureLoader;
+
+import java.io.*;
 
 
 public class renderingTest {
@@ -24,28 +22,39 @@ public class renderingTest {
 	public static Texture block3;
 	
 	public static Texture gremlin1;
+	public static Texture gremlin2;
 	public static Texture player1;
 	
 	public static Texture health;
 	public static Texture damage;
 	public static Texture portal;
 	public static Texture key;
+	public static Texture spring;
+	
+	public static Texture win;
+	public static Texture lose;
+	public static Texture menu;
 	
 	public static Texture target;//Change me to an array list!!!
 	//public static ArrayList<Texture> goals = new ArrayList<Texture>();
 	//END TEXTURES
 	
 	public static void initAllTheTextures() throws IOException {
-		target = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("files" + File.separator + "target.png"));
-		health = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("files" + File.separator + "health.png"));
-		damage = TextureLoader.getTexture("JPG", ResourceLoader.getResourceAsStream("files" + File.separator + "damage.jpg"));
-		portal = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("files" + File.separator + "portal.png"));
-		key = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("files" + File.separator + "key.png"));
-		gremlin1 = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("files" + File.separator + "gremlin1.png"));
-		player1 = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("files" + File.separator + "player.png"));
-		block1 = TextureLoader.getTexture("JPG", ResourceLoader.getResourceAsStream("files" + File.separator + "block1.jpg"));
-		block2 = TextureLoader.getTexture("JPG", ResourceLoader.getResourceAsStream("files" + File.separator + "block2.jpg"));
-		block3 = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("files" + File.separator + "block3.png"));
+		target = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("/Users/Richard/Desktop/thievery/target.png"));
+		health = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("/Users/Richard/Desktop/thievery/health.png"));
+		damage = TextureLoader.getTexture("GIF", ResourceLoader.getResourceAsStream("/Users/Richard/Desktop/thievery/damage.gif"));
+		portal = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("/Users/Richard/Desktop/thievery/portal.png"));
+		key = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("/Users/Richard/Desktop/thievery/key.png"));
+		gremlin1 = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("/Users/Richard/Desktop/thievery/gremlin1.png"));
+		gremlin2 = TextureLoader.getTexture("TIFF", ResourceLoader.getResourceAsStream("/Users/Richard/Desktop/thievery/gremlin2.tiff"));
+		player1 = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("/Users/Richard/Desktop/thievery/player.png"));
+		block1 = TextureLoader.getTexture("JPG", ResourceLoader.getResourceAsStream("/Users/Richard/Desktop/thievery/block1.jpg"));
+		block2 = TextureLoader.getTexture("JPG", ResourceLoader.getResourceAsStream("/Users/Richard/Desktop/thievery/block2.jpg"));
+		block3 = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("/Users/Richard/Desktop/thievery/block3.png"));
+		win = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("/Users/Richard/Desktop/thievery/win.png"));
+		lose = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("/Users/Richard/Desktop/thievery/lose.png"));
+		menu = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("/Users/Richard/Desktop/thievery/menu.png"));
+		spring = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("/Users/Richard/Desktop/thievery/spring.png"));
 	}
 	
 	
@@ -87,15 +96,59 @@ public class renderingTest {
 		}
 		TextureImpl.bindNone();
 	}
+	
+	
+	public boolean inMenu = true;
+	public boolean inLose = false;
+	public boolean inWin = false;
+	public boolean carlos = false;
+	
+	public static void renderDatScreen(int type){
+		float x = (float)player.xCoord;
+		float y = (float)player.yCoord;
+		float l = (float)(x-usefulNumbers.width);
+		float r = (float)(x+usefulNumbers.width);
+		float t = (float)(y+usefulNumbers.height);
+		float b = (float)(y-usefulNumbers.height);
+		TextureImpl.bindNone();
+		switch (type){
+		case 0:
+			menu.bind();
+			break;
+		case 1:
+			win.bind();
+			break;
+		case 2:
+			lose.bind();
+			break;
+		}
+		GL11.glBegin(GL11.GL_QUADS);
+		GL11.glTexCoord2f(0,1);
+        GL11.glVertex2f(l,b);
+        GL11.glTexCoord2f(0,0);
+        GL11.glVertex2f(l,t);
+        GL11.glTexCoord2f(1,0);
+        GL11.glVertex2f(r,t);
+        GL11.glTexCoord2f(1,1);
+        GL11.glVertex2f(r,b);
+        GL11.glEnd();
+	}
+	
 	public static void renderDemGremlins(){
 		int n;
-		TextureImpl.bindNone();
-		Color.white.bind();
-		gremlin1.bind();
 		for (n=0;n<gremlin.allGremlins.size();n++){
 			if (gremlin.allGremlins.get(n).world==player.world){
 				float x = (float)(gremlin.allGremlins.get(n).xCoord);
 				float y = (float)(gremlin.allGremlins.get(n).yCoord);
+				TextureImpl.bindNone();
+				if (gremlin.allGremlins.get(n).extra == 0){
+					TextureImpl.bindNone();
+					gremlin1.bind();
+				}
+				else if (gremlin.allGremlins.get(n).extra == 1){
+					TextureImpl.bindNone();
+					gremlin2.bind();
+				}
 				GL11.glBegin(GL11.GL_QUADS);
 				GL11.glTexCoord2f(0,1);
 	            GL11.glVertex2f(x,(float)(y));
@@ -106,6 +159,7 @@ public class renderingTest {
 	            GL11.glTexCoord2f(1,1);
 	            GL11.glVertex2f((float)(x+1),(float)(y));
 	            GL11.glEnd();
+	            TextureImpl.bindNone();
 			}
 		}
 	}
@@ -139,6 +193,9 @@ public class renderingTest {
 				case 4:
 					key.bind();
 					break;
+				case 6:
+					spring.bind();
+					break;
 				}
 				GL11.glBegin(GL11.GL_QUADS);
 				GL11.glTexCoord2f(0,1);
@@ -156,6 +213,8 @@ public class renderingTest {
 	
 	
 	public static void renderDatHealth(){
+		if (player.health>usefulNumbers.spawnHealth)
+			player.health = usefulNumbers.spawnHealth;
 		TextureImpl.bindNone();
 		double a = usefulNumbers.width;
 		double b = usefulNumbers.height;
@@ -205,18 +264,18 @@ public class renderingTest {
         GL11.glVertex2f((((float)(camera.xCoord+(a-0.25)))),(((float)(camera.yCoord+(b-1.75)))));
         //End frame
 		GL11.glBegin(GL11.GL_QUADS);
-		if (player.deaths<10)
-			GL11.glColor3f(0.0f, 1.0f, 0.0f);
-		else if (player.deaths<15)
+		if (usefulNumbers.lives-player.deaths<=usefulNumbers.lives/4)
+			GL11.glColor3f(1.0f, 0.0f, 0.0f);
+		else if (usefulNumbers.lives-player.deaths<=usefulNumbers.lives/2)
 			GL11.glColor3f(1.0f, 1.0f, 0.0f);
 		else
-			GL11.glColor3f(1.0f, 0.0f, 0.0f);
+			GL11.glColor3f(0.0f, 1.0f, 0.0f);
         GL11.glVertex2f((((float)(camera.xCoord+(a-0.5)))),(((float)(camera.yCoord+(b-0.5)))));
         GL11.glVertex2f((((float)(camera.xCoord+(a-10.5)))),(((float)(camera.yCoord+(b-0.5)))));
         GL11.glVertex2f((((float)(camera.xCoord+(a-10.5)))),(((float)(camera.yCoord+(b-1.5)))));
         GL11.glVertex2f((((float)(camera.xCoord+(a-0.5)))),(((float)(camera.yCoord+(b-1.5)))));
         //Actual bar
-        float ratio = (20-player.deaths)/(float)(20.0);
+        float ratio = (usefulNumbers.lives-player.deaths)/(float)(usefulNumbers.lives);
         float n = (float)((a-10.5)+(10.0*ratio));
         //Convert actual health
         GL11.glBegin(GL11.GL_QUADS);
@@ -229,6 +288,20 @@ public class renderingTest {
         GL11.glColor3f(0.0f, 0.0f, 0.0f);
         GL11.glVertex2f(((float)(camera.xCoord+(a-0.5))),(((float)(camera.yCoord+(b-1.5)))));
 		GL11.glEnd();
+	}
+	
+	public static void totalRestart(){
+		usefulNumbers.setSpawnInfo(usefulNumbers.firstSpawnX,usefulNumbers.firstSpawnY, usefulNumbers.firstSpawnW, usefulNumbers.firstSpawnH);
+		player.respawn();
+		plot.keys=new ArrayList<Integer>();
+		int t;
+		for (t=0;t<grabbable.allGrabbables.size();t++){
+			grabbable.allGrabbables.get(t).exists=true;//NEED TO EMPTY ANY PLOT CACHES
+		}
+		plot.piecesGrabbed=new ArrayList<Integer>();
+		usefulNumbers.backUp();
+		usefulNumbers.kbu();
+		player.deaths = 0;
 	}
 	
 	public void start() throws InterruptedException,IOException {
@@ -255,22 +328,6 @@ public class renderingTest {
         float n;
         float m;
 		while (!Display.isCloseRequested()) {
-			if (player.deaths == 20){
-				Display.destroy();
-				break;//Quits if you die too much
-			}
-			if (Keyboard.isKeyDown(Keyboard.KEY_Q)){
-				Thread.sleep(250);
-				usefulNumbers.setSpawnInfo(usefulNumbers.firstSpawnX,usefulNumbers.firstSpawnY, usefulNumbers.firstSpawnW, usefulNumbers.firstSpawnH);
-				player.respawn();
-				plot.keys=new ArrayList<Integer>();
-				int t;
-				for (t=0;t<grabbable.allGrabbables.size();t++){
-					grabbable.allGrabbables.get(t).exists=true;//NEED TO EMPTY ANY PLOT CACHES
-				}
-				usefulNumbers.backUp();
-				usefulNumbers.kbu();
-				}
 			grabbable.justPortaled--;//Don't touch me
 			grabbable.justPortaled%=100;
 			//Stuff for Thievery
@@ -334,7 +391,67 @@ public class renderingTest {
             GL11.glTexCoord2f(0,0);
             GL11.glVertex2f((m+1), (n));
             
+            //Special thing for menu screen
             GL11.glEnd();
+            
+            //MENU STUFFS :P
+            
+            if (plot.hasWon && !carlos){
+            	inWin = true;
+            	carlos = true;
+            }
+            
+            if (inMenu){
+            	if (Keyboard.isKeyDown(Keyboard.KEY_Q)){
+            		//System.out.println("MENU");
+            		Display.destroy();
+            	}
+            	if (Keyboard.isKeyDown(Keyboard.KEY_S)){
+            		inMenu = false;
+            		inWin = false;
+            		inLose = false;
+            		carlos = false;
+            		plot.hasWon = false;
+            		renderingTest.totalRestart();
+            	}
+            	renderDatScreen(0);
+            }
+            
+            if (inWin){
+            	if (Keyboard.isKeyDown(Keyboard.KEY_Q)){
+            		//System.out.println("WIN");
+            		Display.destroy();
+            	}
+            	if (Keyboard.isKeyDown(Keyboard.KEY_S)){
+            		inWin = false;
+            		inMenu = true;
+            		Thread.sleep(125);
+            	}
+            	renderDatScreen(1);
+            }
+            
+            if (inLose){
+            	renderDatScreen(2);
+            	if (Keyboard.isKeyDown(Keyboard.KEY_Q)){
+            		//System.out.println("LOSE");
+            		Display.destroy();
+            	}
+            	if (Keyboard.isKeyDown(Keyboard.KEY_S)){
+            		inLose = false;
+            		inMenu = true;
+            		Thread.sleep(125);
+            	}
+            }
+            
+            
+            if (Keyboard.isKeyDown(Keyboard.KEY_Q)||player.deaths==usefulNumbers.lives){
+            	player.deaths = 0;
+            	inLose = true;
+            	Thread.sleep(125);
+            }
+            //end special thing for menu screen
+            
+   
 			Display.update();
 		}
 			Display.destroy();
